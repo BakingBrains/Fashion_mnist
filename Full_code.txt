@@ -1,0 +1,35 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+import matplotlib.pyplot as plt
+
+mnist = tf.keras.datasets.fashion_mnist
+
+(training_images, training_labels), (testing_images, testing_labels) = mnist.load_data()
+
+np.set_printoptions(linewidth = 200)
+plt.imshow(training_images[5])
+print(training_labels[5])
+print(training_images[5])
+
+training_images = training_images/255.0
+testing_images = testing_images/255.0
+
+model = tf.keras.Sequential([tf.keras.layers.Flatten(),
+                            tf.keras.layers.Dense(1024, activation = tf.nn.relu),
+                            tf.keras.layers.Dense(128, activation = tf.nn.relu),
+                            tf.keras.layers.Dense(10, activation = tf.nn.softmax)])
+
+model.compile(optimizer = tf.optimizers.Adam(),
+             loss = 'sparse_categorical_crossentropy',
+             metrics = ['acc'])
+
+
+model.fit(training_images, training_labels, epochs = 10)
+
+model.evaluate(testing_images, testing_labels)
+
+classification = model.predict(testing_images)
+print(classification[0])
+print(testing_labels[0])
+plt.imshow(testing_images[0])
